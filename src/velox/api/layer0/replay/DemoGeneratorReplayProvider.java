@@ -80,11 +80,11 @@ public class DemoGeneratorReplayProvider extends ExternalReaderBaseProvider {
     private void read() {
         // instrument1 defined 1 second after feed is started
         currentTime += 1 * NS_IN_SEC;
-        InstrumentInfo instrument1 = new InstrumentInfo("Test instrument", null, null, 25, 1, "Test instrument - full name");
+        InstrumentInfo instrument1 = new InstrumentInfo("Test instrument", null, null, 25, 1, "Test instrument - full name", false);
         instrumentListeners.forEach(l -> l.onInstrumentAdded("Test instrument", instrument1));
         
         // And the second instrument is defined at the same point in time
-        InstrumentInfo instrument2 = new InstrumentInfo("Test instrument 2", null, null, 10, 1, "Test instrument 2 - full name");
+        InstrumentInfo instrument2 = new InstrumentInfo("Test instrument 2", null, null, 10, 1, "Test instrument 2 - full name", false);
         instrumentListeners.forEach(l -> l.onInstrumentAdded("Test instrument 2", instrument2));
 
         currentTime += NS_IN_SEC;

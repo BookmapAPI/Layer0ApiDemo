@@ -142,7 +142,7 @@ public class DemoExternalRealtimeProvider extends ExternalLiveBaseProvider {
                 instruments.put(alias, newInstrument);
 
                 final InstrumentInfo instrumentInfo = new InstrumentInfo(
-                        symbol, exchange, type, newInstrument.pips, 1, "");
+                        symbol, exchange, type, newInstrument.pips, 1, "", false);
 
                 instrumentListeners.forEach(l -> l.onInstrumentAdded(alias, instrumentInfo));
             }
