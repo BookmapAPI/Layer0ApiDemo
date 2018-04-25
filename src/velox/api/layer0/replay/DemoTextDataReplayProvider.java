@@ -56,7 +56,7 @@ public class DemoTextDataReplayProvider extends ExternalReaderBaseProvider {
                 readerThread = new Thread(this::read);
                 readerThread.start();
             }
-        } catch (IOException e) {
+        } catch (@SuppressWarnings("unused") IOException e) {
             adminListeners.forEach(listener -> listener.onUserMessage(new FileNotSupportedUserMessage()));
         }
     }
@@ -66,7 +66,7 @@ public class DemoTextDataReplayProvider extends ExternalReaderBaseProvider {
             while (!Thread.interrupted() && play) {
                 readLine();
             }
-        } catch (IOException e) {
+        } catch (@SuppressWarnings("unused") IOException e) {
             reportFileEnd();
         }
     }

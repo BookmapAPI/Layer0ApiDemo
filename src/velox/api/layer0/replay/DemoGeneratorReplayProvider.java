@@ -50,7 +50,6 @@ import velox.api.layer1.data.TradeInfo;
  * {@link DemoExternalRealtimeTradingProvider}
  * </p>
  */
-@SuppressWarnings("deprecation")
 public class DemoGeneratorReplayProvider extends ExternalReaderBaseProvider {
     /**
      * Some point in time, just for convenience (nanoseconds)
