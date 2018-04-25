@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import com.google.gson.Gson;
 
+import velox.api.layer0.annotations.Layer0ReplayModule;
 import velox.api.layer0.data.FileEndReachedUserMessage;
 import velox.api.layer0.data.FileNotSupportedUserMessage;
 import velox.api.layer0.data.ReadFileLoginData;
@@ -19,6 +20,7 @@ import velox.api.layer1.data.TradeInfo;
  * Allows reading simple text format (that mimics {@link Layer1ApiListener}
  * methods) to be replayed by Bookmap.
  */
+@Layer0ReplayModule
 public class DemoTextDataReplayProvider extends ExternalReaderBaseProvider {
 
     private final Gson gson = new Gson();

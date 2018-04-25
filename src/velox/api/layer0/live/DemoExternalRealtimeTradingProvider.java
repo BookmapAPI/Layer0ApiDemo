@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import velox.api.layer0.annotations.Layer0LiveModule;
 import velox.api.layer1.data.ExecutionInfo;
 import velox.api.layer1.data.Layer1ApiProviderSupportedFeatures;
 import velox.api.layer1.data.OrderCancelParameters;
@@ -28,6 +29,7 @@ import velox.api.layer1.data.SystemTextMessageType;
  * It does not aim to be realistic, so it's somewhat simplified.
  * </p>
  */
+@Layer0LiveModule
 public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimeProvider {
 
     AtomicInteger orderIdGenerator = new AtomicInteger();

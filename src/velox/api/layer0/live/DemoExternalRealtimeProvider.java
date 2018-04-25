@@ -2,6 +2,7 @@ package velox.api.layer0.live;
 
 import java.util.HashMap;
 
+import velox.api.layer0.annotations.Layer0LiveModule;
 import velox.api.layer1.Layer1ApiAdminListener;
 import velox.api.layer1.data.InstrumentInfo;
 import velox.api.layer1.data.LoginData;
@@ -16,6 +17,7 @@ import velox.api.layer1.data.UserPasswordDemoLoginData;
  * This a demo provider that generates data instead of actually receiving it.
  * </p>
  */
+@Layer0LiveModule
 public class DemoExternalRealtimeProvider extends ExternalLiveBaseProvider {
 
     protected class Instrument {

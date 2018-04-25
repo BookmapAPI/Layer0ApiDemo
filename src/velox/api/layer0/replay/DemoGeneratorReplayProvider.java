@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import velox.api.layer0.annotations.Layer0ReplayModule;
 import velox.api.layer0.data.FileEndReachedUserMessage;
 import velox.api.layer0.data.IndicatorDefinitionUserMessage;
 import velox.api.layer0.data.IndicatorPointUserMessage;
@@ -50,6 +51,7 @@ import velox.api.layer1.data.TradeInfo;
  * {@link DemoExternalRealtimeTradingProvider}
  * </p>
  */
+@Layer0ReplayModule
 public class DemoGeneratorReplayProvider extends ExternalReaderBaseProvider {
     /**
      * Some point in time, just for convenience (nanoseconds)
