@@ -98,7 +98,7 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
             // Synchronizing since trading simulation will be done in different
             // thread
             synchronized (workingOrders) {
-                workingOrders.put(builder.orderId, builder);
+                workingOrders.put(builder.getOrderId(), builder);
             }
         }
 
@@ -182,7 +182,7 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
                 workingOrders.values().removeIf(o -> o.getStatus() != OrderStatus.WORKING);
 
                 for (OrderInfoBuilder order : workingOrders.values()) {
-                    Instrument instrument = instruments.get(order.instrumentAlias);
+                    Instrument instrument = instruments.get(order.getInstrumentAlias());
 
                     // Only simulating if user is subscribed to instrument -
                     // this is because we do not generate data when there is no
@@ -193,11 +193,11 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
                         // that's because order price is a raw value and
                         // instrument bid/ask are level numbers.
 
-                        double bestPrice = order.isBuy
+                        double bestPrice = order.isBuy()
                                 ? instrument.getBestAsk() * instrument.pips
                                 : instrument.getBestBid() * instrument.pips;
 
-                        boolean shouldBeExecuted = order.isBuy
+                        boolean shouldBeExecuted = order.isBuy()
                                 ? bestPrice <= order.getLimitPrice()
                                 : bestPrice >= order.getLimitPrice();
 
@@ -216,7 +216,7 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
                             // when it was sent for realtime executions, you are
                             // allowed to send historical executions for those
                             // to be displayed in account info panel.
-                            ExecutionInfo executionInfo = new ExecutionInfo(order.orderId, unfilled, bestPrice,
+                            ExecutionInfo executionInfo = new ExecutionInfo(order.getOrderId(), unfilled, bestPrice,
                                     executionId, executionTime);
                             tradingListeners.forEach(l -> l.onOrderExecuted(executionInfo));
 

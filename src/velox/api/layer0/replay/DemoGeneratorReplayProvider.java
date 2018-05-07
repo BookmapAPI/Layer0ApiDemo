@@ -227,7 +227,7 @@ public class DemoGeneratorReplayProvider extends ExternalReaderBaseProvider {
         // Let's execute the order
         currentTime += NS_IN_SEC;
         ExecutionInfo executionInfo = new ExecutionInfo(
-                order.orderId,
+                order.getOrderId(),
                 5, 
                 4480, 
                 "execution-id-1",
