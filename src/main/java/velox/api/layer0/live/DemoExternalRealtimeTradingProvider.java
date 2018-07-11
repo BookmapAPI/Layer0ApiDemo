@@ -29,7 +29,7 @@ import velox.api.layer1.data.SystemTextMessageType;
  * It does not aim to be realistic, so it's somewhat simplified.
  * </p>
  */
-@Layer0LiveModule
+@Layer0LiveModule(fullName = "Demo external trading", shortName = "DT")
 public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimeProvider {
 
     AtomicInteger orderIdGenerator = new AtomicInteger();
