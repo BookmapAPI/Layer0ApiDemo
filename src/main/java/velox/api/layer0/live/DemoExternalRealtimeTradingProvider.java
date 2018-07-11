@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import velox.api.layer0.annotations.Layer0LiveModule;
+import velox.api.layer1.annotations.Layer1ApiVersion;
+import velox.api.layer1.annotations.Layer1ApiVersionValue;
 import velox.api.layer1.data.ExecutionInfo;
 import velox.api.layer1.data.Layer1ApiProviderSupportedFeatures;
 import velox.api.layer1.data.OrderCancelParameters;
@@ -29,6 +31,7 @@ import velox.api.layer1.data.SystemTextMessageType;
  * It does not aim to be realistic, so it's somewhat simplified.
  * </p>
  */
+@Layer1ApiVersion(Layer1ApiVersionValue.VERSION1)
 @Layer0LiveModule(fullName = "Demo external trading", shortName = "DT")
 public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimeProvider {
 

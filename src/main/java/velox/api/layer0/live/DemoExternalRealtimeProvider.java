@@ -4,11 +4,14 @@ import java.util.HashMap;
 
 import velox.api.layer0.annotations.Layer0LiveModule;
 import velox.api.layer1.Layer1ApiAdminListener;
+import velox.api.layer1.annotations.Layer1ApiVersion;
+import velox.api.layer1.annotations.Layer1ApiVersionValue;
 import velox.api.layer1.data.InstrumentInfo;
 import velox.api.layer1.data.LoginData;
 import velox.api.layer1.data.LoginFailedReason;
 import velox.api.layer1.data.OrderSendParameters;
 import velox.api.layer1.data.OrderUpdateParameters;
+import velox.api.layer1.data.SubscribeInfo;
 import velox.api.layer1.data.TradeInfo;
 import velox.api.layer1.data.UserPasswordDemoLoginData;
 
@@ -17,6 +20,7 @@ import velox.api.layer1.data.UserPasswordDemoLoginData;
  * This a demo provider that generates data instead of actually receiving it.
  * </p>
  */
+@Layer1ApiVersion(Layer1ApiVersionValue.VERSION1)
 @Layer0LiveModule(fullName = "Demo external realtime", shortName = "DE")
 public class DemoExternalRealtimeProvider extends ExternalLiveBaseProvider {
 
@@ -121,7 +125,11 @@ public class DemoExternalRealtimeProvider extends ExternalLiveBaseProvider {
     }
 
     @Override
-    public void subscribe(String symbol, String exchange, String type) {
+    public void subscribe(SubscribeInfo subscribeInfo) {
+        String symbol = subscribeInfo.symbol;
+        String exchange = subscribeInfo.exchange;
+        String type = subscribeInfo.type;
+
         String alias = createAlias(symbol, exchange, type);
         // Since instruments also will be accessed from the data generation
         // thread, synchronization is required
