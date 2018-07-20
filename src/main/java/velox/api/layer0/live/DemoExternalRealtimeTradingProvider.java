@@ -92,17 +92,17 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
             adminListeners.forEach(l -> l.onSystemTextMessage("This provider only supports limit orders",
                     SystemTextMessageType.ORDER_FAILURE));
         } else {
-            // We are going to simulate this order, entering WORKING state
-            builder.setStatus(OrderStatus.WORKING);
-            tradingListeners.forEach(l -> l.onOrderUpdated(builder.build()));
-            builder.markAllUnchanged();
-
             // Placing it into list of working orders so it will be simulated.
             // Synchronizing since trading simulation will be done in different
             // thread
             synchronized (workingOrders) {
                 workingOrders.put(builder.getOrderId(), builder);
             }
+            
+            // We are going to simulate this order, entering WORKING state
+            builder.setStatus(OrderStatus.WORKING);
+            tradingListeners.forEach(l -> l.onOrderUpdated(builder.build()));
+            builder.markAllUnchanged();
         }
 
     }
