@@ -1,9 +1,19 @@
 apply plugin: 'java'
+apply plugin: 'eclipse'
+
+repositories {
+    mavenCentral()
+    maven {
+        url "http://maven.bookmap.com/maven2/releases/"
+    }
+}
+
 
 dependencies {
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.4'
     if (!findProperty('is_built_from_main_bookmap_project')) {
-        compile files('C:/Program Files/Bookmap/lib/bm-l1api.jar')
-        compile files('C:/Program Files/Bookmap/lib/bm-l1api-javadoc.jar')
+        compileOnly group: 'com.bookmap.api', name: 'api-core', version: '7.0.0.48';
     }
 }
+
+eclipse.classpath.downloadJavadoc = true
