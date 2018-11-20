@@ -20,7 +20,7 @@ import velox.api.layer1.data.UserPasswordDemoLoginData;
  * This a demo provider that generates data instead of actually receiving it.
  * </p>
  */
-@Layer1ApiVersion(Layer1ApiVersionValue.VERSION1)
+@Layer1ApiVersion(Layer1ApiVersionValue.VERSION2)
 @Layer0LiveModule(fullName = "Demo external realtime", shortName = "DE")
 public class DemoExternalRealtimeProvider extends ExternalLiveBaseProvider {
 
