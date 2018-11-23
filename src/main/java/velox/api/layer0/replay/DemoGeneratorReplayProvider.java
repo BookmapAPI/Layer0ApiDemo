@@ -161,7 +161,7 @@ public class DemoGeneratorReplayProvider extends ExternalReaderBaseProvider {
         // Line and icons
         currentTime += NS_IN_SEC / 10;
         IndicatorDefinitionUserMessage indicatorDefinitionMessage = new IndicatorDefinitionUserMessage(
-                1, "Test instrument 2",
+                1, "Test instrument 2", "Indicator 1",
                 (short)0xFFFF, (short)1, 1, Color.ORANGE, 
                 (short)0xFF08, (short)1, 2,
                 icon, -icon.getWidth() / 2, -icon.getHeight() / 2, true);
