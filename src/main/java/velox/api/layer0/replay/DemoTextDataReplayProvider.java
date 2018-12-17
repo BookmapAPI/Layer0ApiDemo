@@ -12,6 +12,8 @@ import velox.api.layer0.data.FileEndReachedUserMessage;
 import velox.api.layer0.data.FileNotSupportedUserMessage;
 import velox.api.layer0.data.ReadFileLoginData;
 import velox.api.layer1.Layer1ApiListener;
+import velox.api.layer1.annotations.Layer1ApiVersion;
+import velox.api.layer1.annotations.Layer1ApiVersionValue;
 import velox.api.layer1.data.InstrumentInfo;
 import velox.api.layer1.data.LoginData;
 import velox.api.layer1.data.TradeInfo;
@@ -20,6 +22,7 @@ import velox.api.layer1.data.TradeInfo;
  * Allows reading simple text format (that mimics {@link Layer1ApiListener}
  * methods) to be replayed by Bookmap.
  */
+@Layer1ApiVersion(Layer1ApiVersionValue.VERSION2)
 @Layer0ReplayModule
 public class DemoTextDataReplayProvider extends ExternalReaderBaseProvider {
 

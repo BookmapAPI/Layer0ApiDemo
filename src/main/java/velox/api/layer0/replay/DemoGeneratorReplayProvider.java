@@ -14,6 +14,8 @@ import velox.api.layer0.data.IndicatorDefinitionUserMessage;
 import velox.api.layer0.data.IndicatorPointUserMessage;
 import velox.api.layer0.data.OrderQueuePositionUserMessage;
 import velox.api.layer0.live.DemoExternalRealtimeTradingProvider;
+import velox.api.layer1.annotations.Layer1ApiVersion;
+import velox.api.layer1.annotations.Layer1ApiVersionValue;
 import velox.api.layer1.data.ExecutionInfo;
 import velox.api.layer1.data.InstrumentInfo;
 import velox.api.layer1.data.LoginData;
@@ -49,6 +51,7 @@ import velox.api.layer1.data.TradeInfo;
  * {@link DemoExternalRealtimeTradingProvider}
  * </p>
  */
+@Layer1ApiVersion(Layer1ApiVersionValue.VERSION2)
 @Layer0ReplayModule
 public class DemoGeneratorReplayProvider extends ExternalReaderBaseProvider {
     /**

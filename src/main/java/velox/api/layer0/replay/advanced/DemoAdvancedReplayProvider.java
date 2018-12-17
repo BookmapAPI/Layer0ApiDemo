@@ -12,6 +12,8 @@ import velox.api.layer0.data.IndicatorPointUserMessage;
 import velox.api.layer0.data.ReadFileLoginData;
 import velox.api.layer0.data.TextDataMessage;
 import velox.api.layer0.replay.ExternalReaderBaseProvider;
+import velox.api.layer1.annotations.Layer1ApiVersion;
+import velox.api.layer1.annotations.Layer1ApiVersionValue;
 import velox.api.layer1.common.Log;
 import velox.api.layer1.data.InstrumentInfo;
 import velox.api.layer1.data.LoginData;
@@ -27,6 +29,7 @@ import velox.api.layer1.data.TradeInfo;
  * file (e.g. as a result of simulation)
  * <p>
  */
+@Layer1ApiVersion(Layer1ApiVersionValue.VERSION2)
 @Layer0ReplayModule
 public class DemoAdvancedReplayProvider extends ExternalReaderBaseProvider implements HandlerListener {
 
