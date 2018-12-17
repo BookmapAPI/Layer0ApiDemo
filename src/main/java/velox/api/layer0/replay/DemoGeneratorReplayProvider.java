@@ -24,8 +24,6 @@ import velox.api.layer1.data.OrderType;
 import velox.api.layer1.data.TradeInfo;
 
 /**
- * <b>In order for this example to work you should copy icon_accept.gif to
- * working directory, which is by default C:\Bookmap\Config </b>
  * <p>
  * Instead of actually reading the file generates data, so you can select any
  * file with this one loaded.
@@ -154,7 +152,7 @@ public class DemoGeneratorReplayProvider extends ExternalReaderBaseProvider {
         
         BufferedImage icon;
         try {
-            icon = ImageIO.read(new File("icon_accept.gif"));
+            icon = ImageIO.read(DemoGeneratorReplayProvider.class.getResourceAsStream("/icon_accept.gif"));
         } catch (IOException e) {
             throw new RuntimeException("failed to load icon", e);
         }
