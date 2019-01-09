@@ -9,12 +9,7 @@ Doing so requires basic Java knowlege, however file replay example that is avail
 
 ## Documentation
 
-It's recommended to begin with this [getting started guide](doc/Layer0APIGettingstarted.pdf). **Please note, that running from IDE is described for 6.1. In 7.0 you should add to classpath Bookmap.jar+all .jar files in ./lib folder instead of BookMap.exe**
+It's recommended to begin with this [getting started guide](doc/Layer0APIGettingstarted.pdf).
 
-Also after you install Bookmap javadoc will be available in C:\Program Files\Bookmap\lib\bm-l1api-javadoc.jar (or C:\Program Files (x86)\Bookmap\lib\bm-l1api-javadoc.jar for x86 version).
+After you install Bookmap javadoc will be available in C:\Program Files\Bookmap\lib\bm-l1api-javadoc.jar. You can also get it from Maven repository.
 
-## Changes
-
-Bookmap 7.0.0 b32 - **[BREAKING CHANGE]** Use getters instead of direct access to certain fields of builders. Commit 63321ec1 of this repository is the latest fully compatible with 6.1.
-
-Bookmap 6.1.0 b28 - API introduced.
