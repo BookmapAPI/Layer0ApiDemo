@@ -20,6 +20,7 @@ import velox.api.layer0.data.IndicatorDefinitionUserMessage;
 import velox.api.layer0.data.IndicatorPointUserMessage;
 import velox.api.layer0.data.OrderQueuePositionUserMessage;
 import velox.api.layer0.data.ReadFileLoginData;
+import velox.api.layer0.data.TextDataMessage;
 import velox.api.layer0.replay.ExternalReaderBaseProvider;
 import velox.api.layer1.Layer1ApiDataListener;
 import velox.api.layer1.Layer1ApiListener;
@@ -169,6 +170,15 @@ public class TextStreamParser extends Layer1ApiUpstreamRelay {
     public static class OrderQueuePositionUserMessageEvent extends Event {
         public String orderId;
         public int position;
+    }
+
+    public static class TextDataMessageEvent extends Event {
+        public String alias;
+        public String source;
+        public double price;
+        public double size;
+        public Boolean isBid;
+        public String data;
     }
     
     private final Gson gson = new Gson();
@@ -365,6 +375,12 @@ public class TextStreamParser extends Layer1ApiUpstreamRelay {
                         OrderQueuePositionUserMessageEvent.class);
                 currentTime = event.time;
                 onUserMessage(new OrderQueuePositionUserMessage(event.orderId, event.position));
+                break;
+            }
+            case "TextDataMessage": {
+                TextDataMessageEvent event = gson.fromJson(eventData, TextDataMessageEvent.class);
+                currentTime = event.time;
+                onUserMessage(new TextDataMessage(event.alias, event.source, event.isBid, event.price, event.size, event.data));
                 break;
             }
             default:
