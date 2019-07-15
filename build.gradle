@@ -12,7 +12,7 @@ repositories {
 dependencies {
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.4'
     if (!findProperty('is_built_from_main_bookmap_project')) {
-        compileOnly group: 'com.bookmap.api', name: 'api-core', version: '7.1.1.19922a213f';
+        compileOnly group: 'com.bookmap.api', name: 'api-core', version: '7.1.1.ea16efe6e7';
     }
 }
 
