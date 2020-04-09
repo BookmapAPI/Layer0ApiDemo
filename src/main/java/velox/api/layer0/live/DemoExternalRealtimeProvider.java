@@ -8,12 +8,13 @@ import velox.api.layer1.annotations.Layer1ApiVersion;
 import velox.api.layer1.annotations.Layer1ApiVersionValue;
 import velox.api.layer1.data.InstrumentInfo;
 import velox.api.layer1.data.LoginData;
-import velox.api.layer1.data.LoginFailedReason;
 import velox.api.layer1.data.OrderSendParameters;
 import velox.api.layer1.data.OrderUpdateParameters;
 import velox.api.layer1.data.SubscribeInfo;
 import velox.api.layer1.data.TradeInfo;
 import velox.api.layer1.data.UserPasswordDemoLoginData;
+
+import static velox.api.layer1.data.LoginFailedReason.WRONG_CREDENTIALS;
 
 /**
  * <p>
@@ -60,9 +61,9 @@ public class DemoExternalRealtimeProvider extends ExternalLiveBaseProvider {
             // Currently Bookmap does not visualize OTC trades, so you will
             // mostly want isOtc=false
             final boolean isOtc = false;
-            // Trade on best bid, ask agressor
+            // Trade on best bid, ask aggressor
             dataListeners.forEach(l -> l.onTrade(alias, bestBid, 1, new TradeInfo(isOtc, false)));
-            // Trade on best ask, bid agressor
+            // Trade on best ask, bid aggressor
             dataListeners.forEach(l -> l.onTrade(alias, bestAsk, 1, new TradeInfo(isOtc, true)));
 
             // With 10% chance change BBO
@@ -210,10 +211,10 @@ public class DemoExternalRealtimeProvider extends ExternalLiveBaseProvider {
         // With real connection provider would attempt establishing connection
         // here.
         boolean isValid = "pass".equals(userPasswordDemoLoginData.password)
-                && "user".equals(userPasswordDemoLoginData.user) && userPasswordDemoLoginData.isDemo == true;
+                && "user".equals(userPasswordDemoLoginData.user) && userPasswordDemoLoginData.isDemo;
 
         if (isValid) {
-            // Report succesful login
+            // Report successful login
             adminListeners.forEach(Layer1ApiAdminListener::onLoginSuccessful);
 
             // Generate some events each second
@@ -231,8 +232,8 @@ public class DemoExternalRealtimeProvider extends ExternalLiveBaseProvider {
             }
         } else {
             // Report failed login
-            adminListeners.forEach(l -> l.onLoginFailed(LoginFailedReason.WRONG_CREDENTIALS,
-                    "This provider only acepts following credentials:\n"
+            adminListeners.forEach(l -> l.onLoginFailed(WRONG_CREDENTIALS,
+                    "This provider only accepts following credentials:\n"
                             + "username: user\n"
                             + "password: pass\n"
                             + "is demo: checked"));
