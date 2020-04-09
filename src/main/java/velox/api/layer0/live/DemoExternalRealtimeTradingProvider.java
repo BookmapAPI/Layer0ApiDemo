@@ -13,11 +13,9 @@ import velox.api.layer1.data.OrderInfoBuilder;
 import velox.api.layer1.data.OrderMoveParameters;
 import velox.api.layer1.data.OrderResizeParameters;
 import velox.api.layer1.data.OrderSendParameters;
-import velox.api.layer1.data.OrderStatus;
 import velox.api.layer1.data.OrderType;
 import velox.api.layer1.data.OrderUpdateParameters;
 import velox.api.layer1.data.SimpleOrderSendParameters;
-import velox.api.layer1.data.SystemTextMessageType;
 
 import static java.util.Arrays.asList;
 import static velox.api.layer1.data.OrderDuration.GTC;
