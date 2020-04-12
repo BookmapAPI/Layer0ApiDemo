@@ -24,26 +24,25 @@ class Instrument {
     }
 
     public void generateData() {
-
         // Determining best bid/ask
-        int bestBid = getBestBid();
-        int bestAsk = getBestAsk();
+        int bestBidPrice = getBestBid();
+        int bestAskPrice = getBestAsk();
 
         // Populating 10 levels to each side of best bid/best ask with
         // random data
         for (int i = 0; i < DEPTH_LEVELS_COUNT; ++i) {
             final int levelsOffset = i;
-            demoExternalRealtimeProvider.dataListeners.forEach(l -> l.onDepth(alias, true, bestBid - levelsOffset, getRandomSize()));
-            demoExternalRealtimeProvider.dataListeners.forEach(l -> l.onDepth(alias, false, bestAsk + levelsOffset, getRandomSize()));
+            demoExternalRealtimeProvider.dataListeners.forEach(l -> l.onDepth(alias, true, bestBidPrice - levelsOffset, getRandomSize()));
+            demoExternalRealtimeProvider.dataListeners.forEach(l -> l.onDepth(alias, false, bestAskPrice + levelsOffset, getRandomSize()));
         }
 
         // Currently Bookmap does not visualize OTC trades, so you will
         // mostly want isOtc=false
         final boolean isOtc = false;
         // Trade on best bid, ask aggressor
-        demoExternalRealtimeProvider.dataListeners.forEach(l -> l.onTrade(alias, bestBid, 1, new TradeInfo(isOtc, false)));
+        demoExternalRealtimeProvider.dataListeners.forEach(l -> l.onTrade(alias, bestBidPrice, 1, new TradeInfo(isOtc, false)));
         // Trade on best ask, bid aggressor
-        demoExternalRealtimeProvider.dataListeners.forEach(l -> l.onTrade(alias, bestAsk, 1, new TradeInfo(isOtc, true)));
+        demoExternalRealtimeProvider.dataListeners.forEach(l -> l.onTrade(alias, bestAskPrice, 1, new TradeInfo(isOtc, true)));
 
         // With 10% chance change BBO
         if (Math.random() < 0.1) {
@@ -52,8 +51,8 @@ class Instrument {
                 // Moving up - erasing best ask, erasing last reported bid
                 // level (emulating exchange only reporting few levels)
                 ++basePrice;
-                demoExternalRealtimeProvider.dataListeners.forEach(l -> l.onDepth(alias, false, bestAsk, 0));
-                demoExternalRealtimeProvider.dataListeners.forEach(l -> l.onDepth(alias, true, bestBid - (DEPTH_LEVELS_COUNT - 1), 0));
+                demoExternalRealtimeProvider.dataListeners.forEach(l -> l.onDepth(alias, false, bestAskPrice, 0));
+                demoExternalRealtimeProvider.dataListeners.forEach(l -> l.onDepth(alias, true, bestBidPrice - (DEPTH_LEVELS_COUNT - 1), 0));
                 // Could also populate new best bid and add last best ask,
                 // but this can be omitted - those will be populated during
                 // next simulation step
@@ -61,8 +60,8 @@ class Instrument {
                 // Moving down - erasing best bid, erasing last reported ask
                 // level (emulating exchange only reporting few levels)
                 --basePrice;
-                demoExternalRealtimeProvider.dataListeners.forEach(l -> l.onDepth(alias, true, bestBid, 0));
-                demoExternalRealtimeProvider.dataListeners.forEach(l -> l.onDepth(alias, false, bestAsk + (DEPTH_LEVELS_COUNT - 1), 0));
+                demoExternalRealtimeProvider.dataListeners.forEach(l -> l.onDepth(alias, true, bestBidPrice, 0));
+                demoExternalRealtimeProvider.dataListeners.forEach(l -> l.onDepth(alias, false, bestAskPrice + (DEPTH_LEVELS_COUNT - 1), 0));
                 // Could also populate new best ask and add last best bid,
                 // but this can be omitted - those will be populated during
                 // next simulation step
