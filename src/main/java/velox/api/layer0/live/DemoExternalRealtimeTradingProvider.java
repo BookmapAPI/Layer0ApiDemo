@@ -1,6 +1,5 @@
 package velox.api.layer0.live;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -10,16 +9,20 @@ import velox.api.layer1.annotations.Layer1ApiVersionValue;
 import velox.api.layer1.data.ExecutionInfo;
 import velox.api.layer1.data.Layer1ApiProviderSupportedFeatures;
 import velox.api.layer1.data.OrderCancelParameters;
-import velox.api.layer1.data.OrderDuration;
 import velox.api.layer1.data.OrderInfoBuilder;
 import velox.api.layer1.data.OrderMoveParameters;
 import velox.api.layer1.data.OrderResizeParameters;
 import velox.api.layer1.data.OrderSendParameters;
-import velox.api.layer1.data.OrderStatus;
 import velox.api.layer1.data.OrderType;
 import velox.api.layer1.data.OrderUpdateParameters;
 import velox.api.layer1.data.SimpleOrderSendParameters;
-import velox.api.layer1.data.SystemTextMessageType;
+
+import static java.util.Arrays.asList;
+import static velox.api.layer1.data.OrderDuration.GTC;
+import static velox.api.layer1.data.OrderStatus.*;
+import static velox.api.layer1.data.OrderType.LMT;
+import static velox.api.layer1.data.OrderType.STP;
+import static velox.api.layer1.data.SystemTextMessageType.ORDER_FAILURE;
 
 /**
  * <p>
@@ -38,7 +41,7 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
     AtomicInteger orderIdGenerator = new AtomicInteger();
     AtomicInteger executionIdGenerator = new AtomicInteger();
 
-    private HashMap<String, OrderInfoBuilder> workingOrders = new HashMap<>();
+    private final HashMap<String, OrderInfoBuilder> workingOrders = new HashMap<>();
 
     @Override
     public void sendOrder(OrderSendParameters orderSendParameters) {
@@ -71,8 +74,8 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
         builder.setStopPrice(simpleParameters.stopPrice)
                 .setLimitPrice(simpleParameters.limitPrice)
                 .setUnfilled(simpleParameters.size)
-                .setDuration(OrderDuration.GTC)
-                .setStatus(OrderStatus.PENDING_SUBMIT);
+                .setDuration(GTC)
+                .setStatus(PENDING_SUBMIT);
         tradingListeners.forEach(l -> l.onOrderUpdated(builder.build()));
         // Marking all fields as unchanged, since they were just reported and
         // fields will be marked as changed automatically when modified.
@@ -81,16 +84,16 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
         // First, since we are not going to emulate stop or market orders in
         // this demo,
         // let's reject anything except for Limit orders.
-        if (orderType != OrderType.LMT) {
+        if (orderType != LMT) {
             // Necessary fields are already populated, so just change status to
             // rejected and send
-            builder.setStatus(OrderStatus.REJECTED);
+            builder.setStatus(REJECTED);
             tradingListeners.forEach(l -> l.onOrderUpdated(builder.build()));
             builder.markAllUnchanged();
 
             // Provider can complain to user here explaining what was done wrong
             adminListeners.forEach(l -> l.onSystemTextMessage("This provider only supports limit orders",
-                    SystemTextMessageType.ORDER_FAILURE));
+                    ORDER_FAILURE));
         } else {
             // Placing it into list of working orders so it will be simulated.
             // Synchronizing since trading simulation will be done in different
@@ -100,7 +103,7 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
             }
             
             // We are going to simulate this order, entering WORKING state
-            builder.setStatus(OrderStatus.WORKING);
+            builder.setStatus(WORKING);
             tradingListeners.forEach(l -> l.onOrderUpdated(builder.build()));
             builder.markAllUnchanged();
         }
@@ -122,7 +125,7 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
                 // Cancel order with provided ID
                 OrderCancelParameters orderCancelParameters = (OrderCancelParameters) orderUpdateParameters;
                 OrderInfoBuilder order = workingOrders.remove(orderCancelParameters.orderId);
-                order.setStatus(OrderStatus.CANCELLED);
+                order.setStatus(CANCELLED);
                 tradingListeners.forEach(l -> l.onOrderUpdated(order.build()));
 
             } else if (orderUpdateParameters.getClass() == OrderResizeParameters.class) {
@@ -159,12 +162,12 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
         return super.getSupportedFeatures()
                 .toBuilder()
                 .setTrading(true)
-                .setSupportedOrderDurations(Arrays.asList(new OrderDuration[] { OrderDuration.GTC }))
+                .setSupportedOrderDurations(asList(GTC))
                 // At the moment of writing this method it was not possible to
                 // report limit orders support, but no stop orders support
                 // If you actually need it, you can report stop orders support
                 // but reject stop orders when those are sent.
-                .setSupportedStopOrders(Arrays.asList(new OrderType[] { OrderType.LMT, OrderType.STP }))
+                .setSupportedStopOrders(asList(LMT, STP))
                 .build();
     }
 
@@ -182,7 +185,7 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
             synchronized (instruments) {
                 // Purging orders that are no longer working - those do not have
                 // to be simulated
-                workingOrders.values().removeIf(o -> o.getStatus() != OrderStatus.WORKING);
+                workingOrders.values().removeIf(o -> o.getStatus() != WORKING);
 
                 for (OrderInfoBuilder order : workingOrders.values()) {
                     Instrument instrument = instruments.get(order.getInstrumentAlias());
@@ -227,7 +230,7 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
                             order.setAverageFillPrice(bestPrice);
                             order.setUnfilled(0);
                             order.setFilled(unfilled);
-                            order.setStatus(OrderStatus.FILLED);
+                            order.setStatus(FILLED);
                             tradingListeners.forEach(l -> l.onOrderUpdated(order.build()));
                             order.markAllUnchanged();
                         }

@@ -46,7 +46,6 @@ public class DemoTextDataReplayProvider extends ExternalReaderBaseProvider {
             if (!fileData.file.getName().endsWith(".simpleformat.txt")) {
                 throw new IOException("File extension not supported");
             } else {
-
                 reader = new BufferedReader(new FileReader(fileData.file));
 
                 // Reading one line to guarantee that when we exit this method
@@ -83,8 +82,10 @@ public class DemoTextDataReplayProvider extends ExternalReaderBaseProvider {
 
     private void readLine() throws IOException {
         String line = reader.readLine();
-        if (line == null && play) {
-            reportFileEnd();
+        if (line == null) {
+            if (play) {
+                reportFileEnd();
+            }
         } else {
             String[] tokens = line.split(";;;");
             currentTime = Long.parseLong(tokens[0]);
