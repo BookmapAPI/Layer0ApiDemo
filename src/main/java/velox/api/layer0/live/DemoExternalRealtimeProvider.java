@@ -6,6 +6,7 @@ import velox.api.layer0.annotations.Layer0LiveModule;
 import velox.api.layer1.Layer1ApiAdminListener;
 import velox.api.layer1.annotations.Layer1ApiVersion;
 import velox.api.layer1.annotations.Layer1ApiVersionValue;
+import velox.api.layer1.common.Log;
 import velox.api.layer1.data.InstrumentInfo;
 import velox.api.layer1.data.LoginData;
 import velox.api.layer1.data.OrderSendParameters;
@@ -51,6 +52,7 @@ public class DemoExternalRealtimeProvider extends ExternalLiveBaseProvider {
         String type = subscribeInfo.type;
 
         String alias = createAlias(symbol, exchange, type);
+        Log.info("Subscribe to symbol " + symbol);
         // Since instruments also will be accessed from the data generation
         // thread, synchronization is required
         //
@@ -81,6 +83,7 @@ public class DemoExternalRealtimeProvider extends ExternalLiveBaseProvider {
 
     @Override
     public void unsubscribe(String alias) {
+        Log.info("Unsubscribe from the symbol " + alias);
         synchronized (instruments) {
             if (instruments.remove(alias) != null) {
                 instrumentListeners.forEach(l -> l.onInstrumentRemoved(alias));
