@@ -20,3 +20,9 @@ dependencies {
 }
 
 eclipse.classpath.downloadJavadoc = true
+
+task installLocally (dependsOn: assemble, type: Copy) {
+    from "build/libs"
+    into "C:\\Bookmap\\API\\Layer0ApiModules"
+    include "*.jar"
+}
