@@ -4,7 +4,7 @@ apply plugin: 'eclipse'
 repositories {
     mavenCentral()
     maven {
-        url "http://maven.bookmap.com/maven2/releases/"
+        url "http://maven.bookmap.com/maven2/develop/"
     }
 }
 
@@ -12,7 +12,7 @@ repositories {
 dependencies {
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.4'
     if (!findProperty('is_built_from_main_bookmap_project')) {
-        compileOnly group: 'com.bookmap.api', name: 'api-core', version: '7.0.0.94';
+        compileOnly group: 'com.bookmap.api', name: 'api-core', version: '7.1.1.ea16efe6e7';
     }
 }
 
