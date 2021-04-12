@@ -4,7 +4,7 @@ apply plugin: 'eclipse'
 repositories {
     mavenCentral()
     maven {
-        url "http://maven.bookmap.com/maven2/releases/"
+        url "https://maven.bookmap.com/maven2/releases/"
     }
 }
 
