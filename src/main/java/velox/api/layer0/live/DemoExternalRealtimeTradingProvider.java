@@ -2,6 +2,7 @@ package velox.api.layer0.live;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import velox.api.layer0.annotations.Layer0LiveModule;
@@ -19,6 +20,7 @@ import velox.api.layer1.data.OrderStatus;
 import velox.api.layer1.data.OrderType;
 import velox.api.layer1.data.OrderUpdateParameters;
 import velox.api.layer1.data.SimpleOrderSendParameters;
+import velox.api.layer1.data.StatusInfoBuilder;
 import velox.api.layer1.data.SystemTextMessageType;
 
 /**
@@ -38,7 +40,8 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
     AtomicInteger orderIdGenerator = new AtomicInteger();
     AtomicInteger executionIdGenerator = new AtomicInteger();
 
-    private HashMap<String, OrderInfoBuilder> workingOrders = new HashMap<>();
+    private final Map<String, OrderInfoBuilder> workingOrders = new HashMap<>();
+    private final Map<String, TradeAudit> tradeAuditMap = new HashMap<>();
 
     @Override
     public void sendOrder(OrderSendParameters orderSendParameters) {
@@ -174,6 +177,7 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
         super.simulate();
 
         simulateOrders();
+        updateTradeAuditInfo();
     }
 
     public void simulateOrders() {
@@ -185,7 +189,8 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
                 workingOrders.values().removeIf(o -> o.getStatus() != OrderStatus.WORKING);
 
                 for (OrderInfoBuilder order : workingOrders.values()) {
-                    Instrument instrument = instruments.get(order.getInstrumentAlias());
+                    String alias = order.getInstrumentAlias();
+                    Instrument instrument = instruments.get(alias);
 
                     // Only simulating if user is subscribed to instrument -
                     // this is because we do not generate data when there is no
@@ -230,8 +235,41 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
                             order.setStatus(OrderStatus.FILLED);
                             tradingListeners.forEach(l -> l.onOrderUpdated(order.build()));
                             order.markAllUnchanged();
+    
+                            synchronized (tradeAuditMap) {
+                                TradeAudit tradeAudit = tradeAuditMap.computeIfAbsent(alias, k -> new TradeAudit());
+                                tradeAudit.recalculateInfo(order.isBuy(), executionInfo);
+                            }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private void updateTradeAuditInfo() {
+        synchronized (instruments) {
+            synchronized (tradeAuditMap) {
+                for (String alias : instruments.keySet()) {
+                    Instrument instrument = instruments.get(alias);
+                    TradeAudit tradeAudit = tradeAuditMap.computeIfAbsent(alias, (k) -> new TradeAudit());
+
+                    double bestPrice = tradeAudit.position > 0 
+                            ? instrument.getBestBid() 
+                            : instrument.getBestAsk();
+    
+                    double theoreticalExitPrice = bestPrice * instrument.pips;
+                    double unrealizedPnl = tradeAudit.getUnrealizedPnl(theoreticalExitPrice);
+
+                    StatusInfoBuilder statusInfoBuilder = new StatusInfoBuilder()
+                            .setInstrumentAlias(alias)
+                            .setAveragePrice(tradeAudit.averagePrice)
+                            .setPosition(tradeAudit.position)
+                            .setRealizedPnl(tradeAudit.realizedPnl)
+                            .setUnrealizedPnl(unrealizedPnl)
+                            .setVolume(tradeAudit.volume);
+
+                    tradingListeners.forEach(t -> t.onStatus(statusInfoBuilder.build()));
                 }
             }
         }
