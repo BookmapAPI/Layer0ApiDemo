@@ -83,8 +83,8 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
 
         // First, since we are not going to emulate stop or market orders in
         // this demo,
-        // let's reject anything except for Limit orders.
-        if (orderType != OrderType.LMT) {
+        // let's reject anything except for Limit and Market orders.
+        if (orderType != OrderType.LMT && orderType != OrderType.MKT) {
             // Necessary fields are already populated, so just change status to
             // rejected and send
             builder.setStatus(OrderStatus.REJECTED);
@@ -92,7 +92,7 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
             builder.markAllUnchanged();
 
             // Provider can complain to user here explaining what was done wrong
-            adminListeners.forEach(l -> l.onSystemTextMessage("This provider only supports limit orders",
+            adminListeners.forEach(l -> l.onSystemTextMessage("This provider only supports market and limit orders",
                     SystemTextMessageType.ORDER_FAILURE));
         } else {
             // Placing it into list of working orders so it will be simulated.
@@ -142,7 +142,7 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
                 OrderMoveParameters orderMoveParameters = (OrderMoveParameters) orderUpdateParameters;
                 OrderInfoBuilder order = workingOrders.get(orderMoveParameters.orderId);
                 // No need to update stop price as this demo only supports limit
-                // orders
+                // and market orders
                 order.setLimitPrice(orderMoveParameters.limitPrice);
                 tradingListeners.forEach(l -> l.onOrderUpdated(order.build()));
                 
@@ -205,9 +205,10 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
                                 ? instrument.getBestAsk() * instrument.pips
                                 : instrument.getBestBid() * instrument.pips;
 
-                        boolean shouldBeExecuted = order.isBuy()
+                        boolean shouldBeExecuted = order.getType() == OrderType.MKT || 
+                                (order.isBuy()
                                 ? bestPrice <= order.getLimitPrice()
-                                : bestPrice >= order.getLimitPrice();
+                                : bestPrice >= order.getLimitPrice());
 
                         if (shouldBeExecuted) {
                             // For simplicity fully executing order with the
