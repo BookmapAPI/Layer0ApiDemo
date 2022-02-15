@@ -162,12 +162,12 @@ public class DemoExternalRealtimeTradingProvider extends DemoExternalRealtimePro
         return super.getSupportedFeatures()
                 .toBuilder()
                 .setTrading(true)
-                .setSupportedOrderDurations(Arrays.asList(new OrderDuration[] { OrderDuration.GTC }))
+                .setSupportedOrderDurations(Arrays.asList(OrderDuration.GTC))
                 // At the moment of writing this method it was not possible to
                 // report limit orders support, but no stop orders support
                 // If you actually need it, you can report stop orders support
                 // but reject stop orders when those are sent.
-                .setSupportedStopOrders(Arrays.asList(new OrderType[] { OrderType.LMT, OrderType.STP }))
+                .setSupportedStopOrders(Arrays.asList(OrderType.LMT, OrderType.MKT))
                 .build();
     }
 
