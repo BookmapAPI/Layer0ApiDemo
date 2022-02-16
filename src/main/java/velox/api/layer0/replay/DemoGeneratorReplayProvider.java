@@ -3,16 +3,17 @@ package velox.api.layer0.replay;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
 import velox.api.layer0.annotations.Layer0ReplayModule;
 import velox.api.layer0.data.FileEndReachedUserMessage;
+import velox.api.layer0.data.FileNotSupportedUserMessage;
 import velox.api.layer0.data.IndicatorDefinitionUserMessage;
 import velox.api.layer0.data.IndicatorPointUserMessage;
 import velox.api.layer0.data.OrderQueuePositionUserMessage;
+import velox.api.layer0.data.ReadFileLoginData;
 import velox.api.layer0.live.DemoExternalRealtimeTradingProvider;
 import velox.api.layer1.annotations.Layer1ApiVersion;
 import velox.api.layer1.annotations.Layer1ApiVersionValue;
@@ -70,10 +71,23 @@ public class DemoGeneratorReplayProvider extends ExternalReaderBaseProvider {
     @Override
     public void login(LoginData loginData) {
         // We are not going to really read the file - just launch the reader thread.
-        readerThread = new Thread(this::read);
-        readerThread.start();
-        
-        currentTime = INITIAL_TIME;
+        ReadFileLoginData fileData = (ReadFileLoginData) loginData;
+
+        try {
+            // For demo purposes let's just check the extension.
+            // Usually you will want to take a look at file content here to
+            // ensure it's expected file format
+            if (!fileData.file.getName().endsWith(".simpleformat2.txt")) {
+                throw new IOException("File extension not supported");
+            } else {
+                readerThread = new Thread(this::read);
+                readerThread.start();
+
+                currentTime = INITIAL_TIME;
+            }
+        } catch (@SuppressWarnings("unused") IOException e) {
+            adminListeners.forEach(listener -> listener.onUserMessage(new FileNotSupportedUserMessage()));
+        }
     }
 
     /**
