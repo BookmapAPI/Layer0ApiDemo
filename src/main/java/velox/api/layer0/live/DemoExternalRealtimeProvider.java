@@ -1,5 +1,6 @@
 package velox.api.layer0.live;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 
 import velox.api.layer0.annotations.Layer0LiveModule;
@@ -14,6 +15,7 @@ import velox.api.layer1.data.OrderUpdateParameters;
 import velox.api.layer1.data.SubscribeInfo;
 import velox.api.layer1.data.TradeInfo;
 import velox.api.layer1.data.UserPasswordDemoLoginData;
+import velox.api.layer1.reading.UserDataUserMessage;
 
 /**
  * <p>
@@ -87,6 +89,19 @@ public class DemoExternalRealtimeProvider extends ExternalLiveBaseProvider {
                     // but this can be omitted - those will be populated during
                     // next simulation step
                 }
+            } else if (Math.random() > 0.9) {
+                // In other 10% cases we send UserDataUserMessage with tag RandomData to be represented in
+                // related demo. We send a random number not far from BBO as a byte array.
+                int medium = (bestBid + bestAsk) / 2;
+                BigInteger randomResult = BigInteger.valueOf(medium + (int) (Math.random() * 20) - 10);
+                byte[] data = randomResult.toByteArray();
+
+                // In 30% cases we send global user message (alias = null), in other cases - aliased user message
+                String aliasResult = Math.random() > 0.3 ? alias : null;
+
+                adminListeners.forEach(l -> l.onUserMessage(
+                        new UserDataUserMessage("RandomData", aliasResult, data)
+                ));
             }
         }
 
