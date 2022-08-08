@@ -21,11 +21,9 @@ public class DemoExternalRealtimeUserMessageProvider extends DemoExternalRealtim
     @Override
     protected void simulate() {
         // Perform data changes simulation
+        super.simulate();
         synchronized (instruments) {
-            instruments.forEach((key, value) -> {
-                value.generateData();
-                simulateRandomData(key, value);
-            });
+            instruments.forEach(this::simulateRandomData);
         }
     }
 
