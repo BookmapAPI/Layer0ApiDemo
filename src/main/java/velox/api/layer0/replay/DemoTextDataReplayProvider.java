@@ -17,6 +17,7 @@ import velox.api.layer1.annotations.Layer1ApiVersionValue;
 import velox.api.layer1.data.InstrumentInfo;
 import velox.api.layer1.data.LoginData;
 import velox.api.layer1.data.TradeInfo;
+import velox.api.layer1.reading.UserDataUserMessage;
 
 /**
  * Allows reading simple text format (that mimics {@link Layer1ApiListener}
@@ -114,6 +115,17 @@ public class DemoTextDataReplayProvider extends ExternalReaderBaseProvider {
 
                 dataListeners.forEach(
                         l -> l.onDepth(alias, isBid, price, size));
+                break;
+            }
+            case "onUserDataUserMessage": {
+                String tag = tokens[2];
+                String alias = tokens[3];
+                byte[] data = tokens[4].getBytes();
+
+                adminListeners.forEach(
+                        l -> l.onUserMessage(
+                                new UserDataUserMessage(tag, alias, data)
+                        ));
                 break;
             }
 
