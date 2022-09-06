@@ -1,15 +1,18 @@
 package velox.api.layer0.live.advanced;
 
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
 
 import velox.api.layer0.annotations.Layer0LiveModule;
-import velox.api.layer0.live.DemoExternalRealtimeProvider;
 import velox.api.layer0.live.DemoExternalRealtimeTradingProvider;
 import velox.api.layer1.annotations.Layer1ApiVersion;
 import velox.api.layer1.annotations.Layer1ApiVersionValue;
+import velox.api.layer1.data.InstrumentCoreInfo;
 import velox.api.layer1.data.Layer1ApiProviderSupportedFeatures;
 import velox.api.layer1.data.OrderSendParameters;
 import velox.api.layer1.data.SimpleOrderSendParameters;
+import velox.api.layer1.utils.SymbolMappingInfo;
 
 /**
  * <p>
@@ -37,15 +40,42 @@ public class CrossPlatformTradingProvider extends DemoExternalRealtimeTradingPro
         // Trading-related capabilities will be extracted from here. Parent class will
         // declare basic trading support.
         return super.getSupportedFeatures().toBuilder()
-                // Note that in current version only the first valid pair will be activated (e.g. if
-                // A trades from B and C you can trade either from B or from C at any point in
-                // time, not from both).
-                .setTradingFrom(Arrays.asList(
-                     // Built-in random data provider
-                     "RANDOM",
-                     // Another demo from this package (data-only)
-                     "EXT:" + DemoExternalRealtimeProvider.class.getName()
-                ))
+                // Add cross trading from Random and Rithmic
+                .setSymbolsMappingFunction(alternatives -> {
+                    
+                    Optional<InstrumentCoreInfo> crossTradingInstrument = alternatives.stream()
+                            .filter(a -> a.type.endsWith("EXT:" + CrossPlatformTradingProvider.class.getName()))
+                            .findAny();
+                    
+                    if (crossTradingInstrument.isPresent()) {
+                        // This is our own instrument that we most likely just defined.
+                        // Need to at least provide pips/multiplier for it
+                        return new SymbolMappingInfo(Collections.emptySet(), Collections.emptySet(), 1, price -> 0.25);
+                    } else {
+                        Optional<InstrumentCoreInfo> sourceInstrument = alternatives.stream()
+                            .filter(a -> a.type.endsWith("@RANDOM") || a.type.endsWith("@RITHMIC"))
+                            .findAny();
+                        Optional<SymbolMappingInfo> mappingInfo = sourceInstrument.map(instrument -> {
+                                String crossTradingTargetType = instrument.type
+                                        .replaceAll("RANDOM|RITHMIC", "EXT:" + CrossPlatformTradingProvider.class.getName());
+                                InstrumentCoreInfo crossTradingTarget = new InstrumentCoreInfo(
+                                        instrument.symbol, 
+                                        instrument.exchange, 
+                                        crossTradingTargetType);
+                                // Note: in this case you can pass this instrument as either alternative or 
+                                // a cross trading target (so as a either first or second parameter). This 
+                                // will produce similar immediate effect, but will change the potential 
+                                // effects later: alternative means that it's the same instrument, just in
+                                // another connection syntax. Cross trading target (crossTradingTo field)
+                                // means that it's a different symbol that we can cross trade to (like ES->MES)
+                                return new SymbolMappingInfo(
+                                    Collections.emptySet(),
+                                    Set.of(crossTradingTarget),
+                                    1, price -> 0.25);
+                            });
+                        return mappingInfo.orElse(null);
+                    }
+                })
                 .build();
     }
     
