@@ -12,7 +12,7 @@ import velox.api.layer1.data.InstrumentCoreInfo;
 import velox.api.layer1.data.Layer1ApiProviderSupportedFeatures;
 import velox.api.layer1.data.OrderSendParameters;
 import velox.api.layer1.data.SimpleOrderSendParameters;
-import velox.api.layer1.utils.SymbolMappingInfo;
+import velox.api.layer1.data.SymbolMappingInfo;
 
 /**
  * <p>
