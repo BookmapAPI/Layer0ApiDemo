@@ -87,7 +87,7 @@ For example, the line in `external-live-modules.txt` can look like this:
 `velox.api.layer0.live.DemoExternalRealtimeTradingProvider D:\Layer0ApiDemo\build\classes\java\main\`
 
 Note that for this approach to work all the files should be included into the
-folder/jar file that you specify as `<full-class-name>`, i.e. if your module uses
+folder/jar file that you specify as `<path-without-spaces>`, i.e. if your module uses
 a file from `resources` folder of class path - make sure it is in the same folder.
 
 ### 2. Loading from a jar file
@@ -118,6 +118,7 @@ If you don’t need username or password just leave those empty - actual use of 
 defined by your code.
 If you need to place some additional data like server address, you can place it into one of those
 fields. E.g. user “u1” at server “127.0.0.1” could be set as u1@127.0.0.1 inside “username” field.
+Use `Layer0CredentialsFieldsManager` annotation if you want to customize the input fields.
 
 ## Environment setup
 
