@@ -13,6 +13,7 @@ import velox.api.layer1.data.Layer1ApiProviderSupportedFeatures;
 import velox.api.layer1.data.OrderSendParameters;
 import velox.api.layer1.data.SimpleOrderSendParameters;
 import velox.api.layer1.data.SymbolMappingInfo;
+import velox.api.layer1.messages.Layer1ApiGetAliasMessage;
 
 /**
  * <p>
@@ -99,5 +100,15 @@ public class CrossPlatformTradingProvider extends DemoExternalRealtimeTradingPro
         instruments.putIfAbsent(alias, newInstrument);
 
         super.sendOrder(orderSendParameters);
+    }
+    
+    @Override
+    public Object sendUserMessage(Object data) {
+        // For cross-trading to work it's important to return alias of the instrument
+        if (data.getClass() == Layer1ApiGetAliasMessage.class) {
+            return ((Layer1ApiGetAliasMessage)data).symbol;
+        }
+
+        return super.sendUserMessage(data);
     }
 }
